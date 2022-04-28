@@ -1,0 +1,128 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: dbdata
+type: Opaque
+data:
+  DBHOST: bXlzcWw=
+  DATABASE: Z2hvc3Q=
+  USER: YWRtaW4=
+  PASS: cGFzc3dvcmQ=
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv0001
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 5Gi
+  hostPath:
+    path: /data/pv0001/
+
+---
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-ghost
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: ghost-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: ghost
+  ports:      
+    - port: 8080
+      targetPort: 2368
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ghost
+  labels:
+    app: ghost
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ghost
+  template:
+    metadata:
+      labels:
+        app: ghost
+    spec:
+      containers:
+      - name: ghost
+        image: ghost:4.44
+        imagePullPolicy: "IfNotPresent"
+        ports:
+        - containerPort: 2368
+        readinessProbe:
+          httpGet:
+            scheme: HTTP
+            path: /
+            port: 2368
+            httpHeaders:
+            - name: X-Forwarded-Proto
+              value: https
+          initialDelaySeconds: 60
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: "300Mi"
+            cpu: "300m"
+          limits:
+            memory: "4G"
+            cpu: "1"
+        env:
+#          - name: url
+#            value: http://fqdn:port
+          - name: database__connection__host
+            valueFrom:
+              secretKeyRef:
+                name: dbdata
+                key: DBHOST
+          - name: database__connection__database
+            valueFrom:
+              secretKeyRef:
+                name: dbdata  
+                key: DATABASE              
+          - name: database__connection__user
+            valueFrom:
+              secretKeyRef:
+                name: dbdata
+                key: USER                
+          - name: database__connection__password
+            valueFrom:
+              secretKeyRef:
+                name: dbdata
+                key: PASS
+        volumeMounts:
+        - mountPath: /var/lib/ghost/content/images
+          name: data-volume
+        - mountPath: /var/lib/ghost/content/data
+          name: data-volume          
+      volumes:
+      - name: data-volume
+        persistentVolumeClaim:
+          claimName: pvc-ghost
+      restartPolicy: Always
