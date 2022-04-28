@@ -92,4 +92,15 @@ Status:
                 loadbalancer emulator: no errors
 ```                
 
+**Use Minikube to open Ghost CMS in a webpage**
+```
+D:\Ghost>minikube service ghost-service -n ghost
+|-----------|---------------|-------------|----------------------------|
+| NAMESPACE |     NAME      | TARGET PORT |            URL             |
+|-----------|---------------|-------------|----------------------------|
+| ghost     | ghost-service |        8080 | http://192.168.1.174:32205 |
+|-----------|---------------|-------------|----------------------------|
+* Opening service ghost/ghost-service in default browser...
+```
 
+Admin panel is available at http://yourghostaddres:port/ghost.
