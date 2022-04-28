@@ -35,7 +35,7 @@ D:\Ghost>minikube kubectl -- get pods -n ghost
 NAME                     READY   STATUS    RESTARTS   AGE
 mysql-5bdcf88f4f-zrhk9   1/1     Running   0          78s
 ```
-**Start Minikube tunnel**
+**Start Minikube tunnel (in an another shell)**
 ```
 D:\Ghost>minikube tunnel
 Status:
