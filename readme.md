@@ -1,13 +1,17 @@
 **Deploy Ghost CMS with MySQL server to Kubernetes**
+
 These manifests can be used also in any Kubernetes cluster, but make sure to change storage, MySQL root password and Ghost CMS credentials.
 
 Manifests work with Minikube out-of-the-box (https://minikube.sigs.k8s.io/docs/start/).
 
-**MySQL deployment**
-
-D:\Ghost>**minikube kubectl -- create namespace ghost**
+**Create namespace**
+```
+D:\Ghost>minikube kubectl -- create namespace ghost
 namespace/ghost created
+```
 
+**MySQL deployment**
+```
 D:\Ghost>**minikube kubectl -- apply -f mysql-server.yaml -n ghost**
 secret/mysqlserver created
 persistentvolume/mysql-pv-volume created
@@ -30,8 +34,9 @@ mysql   ClusterIP   None         <none>        3306/TCP   67s
 D:\Ghost>minikube kubectl -- get pods -n ghost
 NAME                     READY   STATUS    RESTARTS   AGE
 mysql-5bdcf88f4f-zrhk9   1/1     Running   0          78s
-
-**Start minikube tunnel**
+```
+**Start Minikube tunnel**
+```
 D:\Ghost>minikube tunnel
 Status:
         machine: minikube
@@ -43,10 +48,10 @@ Status:
                 minikube: no errors
                 router: no errors
                 loadbalancer emulator: no errors
-
+```
 **Ghost CMS deployment**
-
-D:\Ghost>**minikube kubectl -- apply -f ghost-deployment.yaml -n ghost**
+```
+D:\Ghost>minikube kubectl -- apply -f ghost-deployment.yaml -n ghost
 secret/dbdata created
 persistentvolume/pv0001 created
 persistentvolumeclaim/pvc-ghost created
@@ -63,12 +68,18 @@ NAME             STATUS   VOLUME            CAPACITY   ACCESS MODES   STORAGECLA
 mysql-pv-claim   Bound    mysql-pv-volume   20Gi       RWO            manual         3m49s
 pvc-ghost        Bound    pv0001            5Gi        RWO            manual         29s
 
+D:\Ghost>minikube kubectl -- get pods -n ghost
+NAME                     READY   STATUS    RESTARTS   AGE
+ghost-67d6d44769-4xvst   1/1     Running   0          70s
+mysql-5bdcf88f4f-zrhk9   1/1     Running   0          4m29s
+
 D:\Ghost>minikube kubectl -- get services -n ghost
 NAME            TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)          AGE
 ghost-service   LoadBalancer   10.110.72.132   10.110.72.132   8080:32205/TCP   58s
 mysql           ClusterIP      None            <none>          3306/TCP         4m18s
-
+```
 **Minikube on another shell is now showing services tunneled**
+```
 Status:
         machine: minikube
         pid: 8000
@@ -79,8 +90,6 @@ Status:
                 minikube: no errors
                 router: no errors
                 loadbalancer emulator: no errors
+```                
 
-D:\Ghost>minikube kubectl -- get pods -n ghost
-NAME                     READY   STATUS    RESTARTS   AGE
-ghost-67d6d44769-4xvst   1/1     Running   0          70s
-mysql-5bdcf88f4f-zrhk9   1/1     Running   0          4m29s
+
