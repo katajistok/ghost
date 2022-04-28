@@ -5,10 +5,10 @@ Manifests work with Minikube out-of-the-box (https://minikube.sigs.k8s.io/docs/s
 
 **MySQL deployment**
 
-D:\Ghost>minikube kubectl -- create namespace ghost
+D:\Ghost>**minikube kubectl -- create namespace ghost**
 namespace/ghost created
 
-D:\Ghost>minikube kubectl -- apply -f mysql-server.yaml -n ghost
+D:\Ghost>**minikube kubectl -- apply -f mysql-server.yaml -n ghost**
 secret/mysqlserver created
 persistentvolume/mysql-pv-volume created
 persistentvolumeclaim/mysql-pv-claim created
@@ -46,7 +46,7 @@ Status:
 
 **Ghost CMS deployment**
 
-D:\Ghost>minikube kubectl -- apply -f ghost-deployment.yaml -n ghost
+D:\Ghost>**minikube kubectl -- apply -f ghost-deployment.yaml -n ghost**
 secret/dbdata created
 persistentvolume/pv0001 created
 persistentvolumeclaim/pvc-ghost created
