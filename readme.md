@@ -1,4 +1,4 @@
-**Deploy Ghost CMS with MySQL server to Kubernetes**
+# Deploy Ghost CMS with MySQL server to Kubernetes
 
 These manifests can be used also in any Kubernetes cluster, but make sure to change storage, MySQL root password and Ghost CMS credentials.
 
